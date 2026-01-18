@@ -3,6 +3,7 @@
 This repository is a PyTorch implementation of the Super-Resolution Convolutional Neural Network (SRCNN) based on the paper:
 > **Image Super-Resolution Using Deep Convolutional Networks**
 > Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang. (2015)
+> 
 
 ## Features
 - **9-1-5 Architecture:** Faithful replication of the original paper structure.
@@ -48,3 +49,24 @@ SRCNN-PyTorch/
 .
 .
 .
+```
+
+## Quick Inference
+
+You can test the model immediately using the pre-trained weights without training from scratch.
+
+1.  **Download Model:** Get the `best_model.pth` file from the [Google Drive Link](https://drive.google.com/file/d/1iiqt87zxvgIN03IGY8TvFXO2xyjhGAlF/view?usp=drive_link) and place it into `experiments/checkpoints/` directory.
+2.  **Add Images:** Place your test images (any format) into the `inputs/` folder.
+3.  **Run Script:**
+    ```bash
+    python src/inference.py
+    ```
+4.  **View Results:** Check the `outputs/` folder. You will see both the `_bicubic` (baseline) and `_srcnn` (enhanced) versions of your images.
+
+> **Note regarding Upscaling Factors:**
+> The pre-trained model provided in the Drive link is trained for **Scale x3**.
+>
+> This implementation supports any scale factor. If you want to use **x2** or **x4**:
+> 1. Open `config.yaml` and change `scale: 3` to your desired value.
+> 2. Run `python src/prepare.py` to generate new dataset patches.
+> 3. Run `python src/train.py` to train a new model for that scale.
