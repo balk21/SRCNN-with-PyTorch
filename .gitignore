@@ -1,0 +1,13 @@
+data/*
+!data/.gitkeep
+experiments/*
+!experiments/.gitkeep
+inputs/*
+!inputs/.gitkeep
+outputs/*
+!outputs/.gitkeep
+
+*.pth
+*.h5
+__pycache__/
+*.py[cod]

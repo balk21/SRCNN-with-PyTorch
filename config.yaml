@@ -1,0 +1,19 @@
+device: "cuda"
+
+train:
+  train_data_path: "data/processed/train.h5"
+  eval_data_path: "data/processed/test.h5"
+  
+  # Hyperparameters
+  batch_size: 128
+  epochs: 1000           # For a quick training with Adam Optimizer. 8e+8 iteration = (8e+8)/171 epochs in paper with SGD.
+  learning_rate: 0.0001  # 1e-4 for first and second layer, 1e-5 for third layer.
+  
+  # System settings
+  num_workers: 8
+  seed: 123              # random seed
+
+model:
+  scale: 3               # Upscaling factor (x3)
+  in_channels: 1         # Y (Luminance) channel only.
+  save_dir: "experiments/checkpoints/"
