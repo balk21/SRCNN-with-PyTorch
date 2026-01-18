@@ -10,7 +10,7 @@ This repository is a PyTorch implementation of the Super-Resolution Convolutiona
 - **Valid Padding:** No padding in convolution layers to avoid border artifacts.
 - **Y-Channel Training:** Training performed on the Y channel (YCbCr) as per the paper.
 - **Dynamic Crop:** Automated handling of input/output size mismatch.
-- **Optimizer:** Adam Optimizer is used instead of SDG.
+- **Optimizer:** Adam Optimizer is used instead of SGD.
 
 ## Requirements
 - Python 3.9
