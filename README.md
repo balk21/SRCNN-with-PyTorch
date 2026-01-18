@@ -5,6 +5,8 @@ This repository is a PyTorch implementation of the Super-Resolution Convolutiona
 > Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang. (2015)
 > 
 
+## The main purpose of this implementation is a term project for "EHB 420E - Artificial Neural Networks" course, Istanbul Technichal University.
+
 ## Features
 - **9-1-5 Architecture:** Faithful replication of the original paper structure.
 - **Valid Padding:** No padding in convolution layers to avoid border artifacts.
