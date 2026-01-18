@@ -85,3 +85,12 @@ Metrics are calculated on the **Y-channel** of the YCbCr color space, and border
 | **BSD200**| x3 | 28.10 dB / 0.7941 | **28.86 dB / 0.8270** | +0.76 dB |
 
 > **Note:** The results above are obtained using the pre-trained `best_model.pth` provided in the release. Evaluation code uses PIL-based Bicubic downsampling to match the training pipeline. Please also note that provided weights only trained for 1000 epochs = 171.000 iteration with adam optimizer. 8*10^8 iteration is done with SGD optimizer in reference paper. All architecture is implemented with i7-11800H CPU and RTX 3060-Laptop GPU. Training 1000 epochs costs less than 1 hour.
+
+### Visual Comparison
+<p align="center">
+  <img src="outputs/butterfly_bicubic.png" width="45%" />
+  <img src="outputs/butterfly_srcnn.png" width="45%" />
+</p>
+<p align="center">
+  <b>Left:</b> Bicubic Upscaling | <b>Right:</b> SRCNN Reconstruction
+</p>
