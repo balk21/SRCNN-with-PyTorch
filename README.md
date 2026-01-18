@@ -88,9 +88,5 @@ Metrics are calculated on the **Y-channel** of the YCbCr color space, and border
 
 ### Visual Comparison
 <p align="center">
-  <img src="outputs/ppt3_bicubic.png" width="45%" />
-  <img src="outputs/ppt3_srcnn.png" width="45%" />
-</p>
-<p align="center">
-  <b>Left:</b> Bicubic Upscaling | <b>Right:</b> SRCNN Reconstruction
+  <img src="outputs/final_comparison.png" width="90%" />
 </p>
