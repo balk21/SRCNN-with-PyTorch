@@ -70,3 +70,16 @@ You can test the model immediately using the pre-trained weights without trainin
 > 1. Open `config.yaml` and change `scale: 3` to your desired value.
 > 2. Run `python src/prepare.py` to generate new dataset patches.
 > 3. Run `python src/train.py` to train a new model for that scale.
+
+## Results
+
+The model performance was evaluated on standard benchmark datasets (Set5, Set14, BSD200) using **Scale x3**. 
+Metrics are calculated on the **Y-channel** of the YCbCr color space, and border pixels were cropped to ensure fair comparison with the original paper.
+
+| Dataset | Scale | Bicubic (PSNR / SSIM) | SRCNN (PSNR / SSIM) | Gain (PSNR) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Set5** | x3 | 30.96 dB / 0.8949 | **32.34 dB / 0.9147** | +1.37 dB |
+| **Set14** | x3 | 28.18 dB / 0.8106 | **29.33 dB / 0.8433** | +1.15 dB |
+| **BSD200**| x3 | 28.10 dB / 0.7941 | **28.86 dB / 0.8270** | +0.76 dB |
+
+> **Note:** The results above are obtained using the pre-trained `best_model.pth` provided in the release. Evaluation code uses PIL-based Bicubic downsampling to match the training pipeline. Please also note that provided weights only trained for 1000 epochs = 171.000 iteration with adam optimizer. 8*10^8 iteration is done with SGD optimizer in reference paper. 
