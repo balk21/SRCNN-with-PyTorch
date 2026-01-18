@@ -9,6 +9,7 @@ This repository is a PyTorch implementation of the Super-Resolution Convolutiona
 - **Valid Padding:** No padding in convolution layers to avoid border artifacts.
 - **Y-Channel Training:** Training performed on the Y channel (YCbCr) as per the paper.
 - **Dynamic Crop:** Automated handling of input/output size mismatch.
+- **Optimizer:** Adam Optimizer is used instead of SDG.
 
 ## Requirements
 - Python 3.9
@@ -22,5 +23,28 @@ This repository is a PyTorch implementation of the Super-Resolution Convolutiona
 4. **Test:** `python src/test.py`
 5. **Inference:** Place images in `inputs/` and run `python src/inference.py`
 
-## License
-MIT License
+## Folder Structure & Data Preparation
+
+To keep the repository light, large files (`data/` and `experiments/`) are not included in the git history. You can download the pre-processed datasets and trained models from the link below:
+
+🔗 **[Download Datasets & Pre-trained Models (Google Drive Link)](https://drive.google.com/drive/folders/1IkD847CYN7umXRaDYyQFw--5A3iAfq37?usp=sharing)**
+
+After downloading, extract the contents to match the following structure:
+
+```text
+SRCNN-PyTorch/
+│
+├── data/
+│   ├── raw/                # Original datasets for train
+│   ├── test/               # Test datasets for evaluation
+│   └── processed/          # Generated .h5 files (train.h5, test.h5)
+│
+├── experiments/
+│   └── checkpoints/        # Saved model weights (best_model.pth)
+│
+├── inputs/                 # Put your images here for inference
+├── outputs/                # Results will be saved here
+├── src/                    # Source code (model, train, test, utils...)
+.
+.
+.
