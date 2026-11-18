@@ -1,19 +1,32 @@
-device: "cuda"
+# Read by every script. Paths are relative to the repository root.
+scale: 3                  # upscaling factor; --scale on the command line overrides it
+
+data:
+  train: data/T91
+  test:                   # evaluated in this order
+    Set5: data/Set5
+    Set14: data/Set14
+    BSD200: data/BSD200
+  cache: data/cache       # training sub-images, built on the first run
+
+model:                    # the paper's basic network, 9-1-5
+  f1: 9
+  f2: 1
+  f3: 5
+  n1: 64
+  n2: 32
 
 train:
-  train_data_path: "data/processed/train.h5"
-  eval_data_path: "data/processed/test.h5"
-  
-  # Hyperparameters
+  sub_image: 33           # input sub-images of 33 x 33; the labels are their centre 21 x 21
+  stride: 14
   batch_size: 128
-  epochs: 1000           # For a quick training with Adam Optimizer. 8e+8 iteration = (8e+8)/171 epochs in paper with SGD.
-  learning_rate: 0.0001  # 1e-4 for first and second layer, 1e-5 for third layer.
-  
-  # System settings
-  num_workers: 8
-  seed: 123              # random seed
+  iterations: 170000      # 1000 epochs of 170 batches
+  lr: 1.0e-4              # first two layers
+  lr_last: 1.0e-5         # last layer
+  log_every: 5000
+  monitor: Set5           # PSNR logged during training only; the last weights are kept
+  seed: 123
+  device: cuda
 
-model:
-  scale: 3               # Upscaling factor (x3)
-  in_channels: 1         # Y (Luminance) channel only.
-  save_dir: "experiments/checkpoints/"
+weights: weights/srcnn_x{scale}.pth
+results: results/x{scale}
