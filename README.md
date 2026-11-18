@@ -1,92 +1,120 @@
-# SRCNN PyTorch Implementation
+# SRCNN in PyTorch
 
-This repository is a PyTorch implementation of the Super-Resolution Convolutional Neural Network (SRCNN) based on the paper:
-> **Image Super-Resolution Using Deep Convolutional Networks**
-> Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang. (2015)
-> 
+A PyTorch implementation of the super-resolution network of Dong et al. (SRCNN): the basic 9-1-5
+network, trained on the 91-image set for ×3 upscaling and evaluated with the paper's protocol. The
+evaluation code reproduces the published numbers exactly when it is given the authors' released
+weights, so the scores below can be compared with the paper directly.
 
-## The main purpose of this implementation is the term project for "EHB 420E - Artificial Neural Networks" course, Istanbul Technical University.
-
-## Features
-- **9-1-5 Architecture:** Faithful replication of the original paper structure.
-- **Valid Padding:** No padding in convolution layers to avoid border artifacts.
-- **Y-Channel Training:** Training performed on the Y channel (YCbCr) as per the paper.
-- **Dynamic Crop:** Automated handling of input/output size mismatch.
-- **Optimizer:** Adam Optimizer is used instead of SGD.
-
-## Requirements
-- Python 3.9
-- PyTorch 2.5.1 (CUDA 12.1)
-- See `environment.yaml` for full list.
-
-## Usage
-1. **Install Environment:** `conda env create -f environment.yaml`
-2. **Prepare Data:** `python src/prepare.py`
-3. **Train:** `python src/train.py`
-4. **Test:** `python src/test.py`
-5. **Inference:** Place images in `inputs/` and run `python src/inference.py`
-
-## Folder Structure & Data Preparation
-
-To keep the repository light, large files (`data/` and `experiments/`) are not included in the git history. You can download the pre-processed datasets and trained models from the link below:
-
-🔗 **[Download Datasets & Pre-trained Models (Google Drive Link)](https://drive.google.com/drive/folders/1IkD847CYN7umXRaDYyQFw--5A3iAfq37?usp=sharing)**
-
-After downloading, extract the contents to match the following structure:
-
-```text
-SRCNN-PyTorch/
-│
-├── data/
-│   ├── raw/                # Original datasets for train
-│   ├── test/               # Test datasets for evaluation
-│   └── processed/          # Generated .h5 files (train.h5, test.h5)
-│
-├── experiments/
-│   └── checkpoints/        # Saved model weights (best_model.pth)
-│
-├── inputs/                 # Put your images here for inference
-├── outputs/                # Results will be saved here
-├── src/                    # Source code (model, train, test, utils...)
-.
-.
-.
-```
-
-## Quick Inference
-
-You can test the model immediately using the pre-trained weights without training from scratch.
-
-1.  **Download Model:** Get the `best_model.pth` file from the [Google Drive Link](https://drive.google.com/file/d/1iiqt87zxvgIN03IGY8TvFXO2xyjhGAlF/view?usp=drive_link) and place it into `experiments/checkpoints/` directory.
-2.  **Add Images:** Place your test images (any format) into the `inputs/` folder.
-3.  **Run Script:**
-    ```bash
-    python src/inference.py
-    ```
-4.  **View Results:** Check the `outputs/` folder. You will see both the `_bicubic` (baseline) and `_srcnn` (enhanced) versions of your images.
-
-> **Note regarding Upscaling Factors:**
-> The pre-trained model provided in the Drive link is trained for **Scale x3**.
->
-> This implementation supports any scale factor. If you want to use **x2** or **x4**:
-> 1. Open `config.yaml` and change `scale: 3` to your desired value.
-> 2. Run `python src/prepare.py` to generate new dataset patches.
-> 3. Run `python src/train.py` to train a new model for that scale.
+Written as the term project of EHB 420E Artificial Neural Networks (İTÜ, January 2026) and rewritten in
+November 2026.
 
 ## Results
 
-The model performance was evaluated on standard benchmark datasets (Set5, Set14, BSD200) using **Scale x3**. 
-Metrics are calculated on the **Y-channel** of the YCbCr color space, and border pixels were cropped to ensure fair comparison with the original paper.
+PSNR (dB) / SSIM on the Y channel, ×3, all measured with this code:
 
-| Dataset | Scale | Bicubic (PSNR / SSIM) | SRCNN (PSNR / SSIM) | Gain (PSNR) |
-| :--- | :---: | :---: | :---: | :---: |
-| **Set5** | x3 | 30.96 dB / 0.8949 | **32.34 dB / 0.9147** | +1.37 dB |
-| **Set14** | x3 | 28.18 dB / 0.8106 | **29.33 dB / 0.8433** | +1.15 dB |
-| **BSD200**| x3 | 28.10 dB / 0.7941 | **28.86 dB / 0.8270** | +0.76 dB |
+| test set | bicubic | authors' 9-1-5 weights | this repository |
+|---|---|---|---|
+| Set5 (5 images) | 30.39 / 0.8682 | 32.39 / 0.9033 | 31.67 / 0.8887 |
+| Set14 (14 images) | 27.54 / 0.7736 | 29.00 / 0.8145 | 28.59 / 0.8073 |
+| BSD200 (200 images) | 27.70 / 0.7635 | 28.70 / 0.8020 | 28.41 / 0.7963 |
 
-> **Note:** The results above are obtained using the pre-trained `best_model.pth` provided in the release. Evaluation code uses PIL-based Bicubic downsampling to match the training pipeline. Please also note that provided weights only trained for 1000 epochs = 171.000 iteration with adam optimizer. 8*10^8 iteration is done with SGD optimizer in reference paper. All architecture is implemented with i7-11800H CPU and RTX 3060-Laptop GPU. Training 1000 epochs costs less than 1 hour.
+The paper reports 30.39 → 32.39 dB on Set5 and 27.54 → 29.00 dB on Set14 (bicubic → SRCNN, 9-1-5
+trained on the 91 images), the numbers in the first two rows. The network trained here ends 0.72 dB
+below the authors' weights on Set5, 0.41 dB on Set14 and 0.29 dB on BSD200. It saw 2.2 × 10⁷
+training sub-images (170 000 batches of 128, 31 minutes on an RTX 3060 Laptop GPU); the paper's saw
+8 × 10⁸. Over the last 50 000 iterations its Set5 PSNR stays between 31.67 and 31.69 dB, so the gap is
+not a matter of a few more epochs.
 
-### Visual Comparison
-<p align="center">
-  <img src="outputs/final_comparison.png" width="90%" />
-</p>
+On BSD200 the paper's bicubic baseline is 25.94 dB. The same code that reproduces Set5 and Set14 gives
+27.70 dB on these 200 images (the training set of BSDS300), so the paper must have measured BSD200
+differently; that row compares only methods measured here.
+
+![training curve](results/x3/training_curve.png)
+
+![bicubic and SRCNN](results/x3/comparison.png)
+
+## What follows the paper
+
+- **Data.** The Y channel (MATLAB's `rgb2ycbcr`) of each image, cropped to a multiple of 3, is shrunk
+  and enlarged again with bicubic interpolation. [srcnn/resize.py](srcnn/resize.py) reproduces MATLAB's
+  `imresize`: a cubic kernel widened by the scale when shrinking, with mirrored borders. Training uses
+  33 × 33 input sub-images taken every 14 pixels and the 21 × 21 centres of the ground truth (21 884
+  pairs from the 91 images), as in the authors' `generate_train.m`.
+- **Network.** 9 × 9 → 1 × 1 → 5 × 5 convolutions with 64 and 32 filters and ReLU, no padding during
+  training, weights drawn from N(0, 0.001), zero biases, mean squared error on the centre pixels.
+- **Training.** Batches of 128, learning rate 10⁻⁴ for the first two layers and 10⁻⁵ for the last one.
+  Two differences from the paper: Adam instead of SGD with momentum, and 1.7 × 10⁵ iterations
+  (1000 epochs) instead of 8 × 10⁸ backpropagations. The weights after the last iteration are kept.
+  Set5 PSNR is logged during training but not used to choose a checkpoint.
+- **Testing.** Every layer pads its input by repeating the border pixels, so the output has the size
+  of the input, as in the authors' test code. The output is rounded to 8 bits, 3 pixels are removed at
+  each border, and PSNR and SSIM (11 × 11 Gaussian window) are computed on the Y channel.
+
+## Changes from the January 2026 version
+
+The first version was measured differently from the paper: the images were resized with PIL, the
+ground truth was resized to a multiple of 3 instead of cropped (which smooths it), and 6 border
+pixels were removed. That raised the bicubic baseline on Set5 from 30.39 to 30.96 dB and made
+the model look as good as the paper's:
+
+| Set5, ×3, PSNR (dB) | bicubic | SRCNN |
+|---|---|---|
+| January version, its own measurement | 30.96 | 32.34 |
+| January weights, the paper's protocol | 30.39 | 31.65 |
+| this version, the paper's protocol | 30.39 | 31.67 |
+| authors' weights, the paper's protocol (the paper's number) | 30.39 | 32.39 |
+
+Retrained on the paper's degradation, the network scores almost what the January weights score with
+the paper's protocol (31.67 against 31.65 dB on Set5, 28.59 against 28.57 dB on Set14). The model
+hardly changed; the measurement did.
+
+Also fixed:
+
+- The training script failed on import; training now uses the paper's bicubic degradation, so training
+  and test inputs come from the same process.
+- The checkpoint was chosen by its PSNR on Set5, which is also a test set; now the last weights are kept.
+- `config.yaml` set the scale and the seed, but the scripts ignored both; every script now reads it.
+- Inference used a different colour conversion from training and returned an image 12 pixels smaller
+  than the bicubic one; it now uses the training conversion and returns the full size.
+- The data was a Google Drive folder of about 300 single files; it now comes from the original sources
+  (the authors' package and BSDS300) through a script.
+- The trained weights (35 KB) are in the repository, and there are tests.
+
+## Layout
+
+```
+srcnn/       library: MATLAB-style bicubic resizing, colour conversion, data, model, metrics, evaluation
+scripts/     download_data.py, train.py, evaluate.py, make_figures.py, upscale.py
+weights/     trained weights (srcnn_x3.pth)
+results/     training log, scores per image, figures
+tests/       pytest suite
+config.yaml  settings read by every script (scale, data, network, training)
+```
+
+## Usage
+
+```bash
+pip install -r requirements.txt     # or: conda env create -f environment.yaml
+```
+
+For a CUDA build of PyTorch, install it first as described on pytorch.org.
+
+```bash
+python scripts/download_data.py     # T91, Set5, Set14, BSD200 and the authors' weights, ~50 MB
+python scripts/train.py             # about 30 minutes on an RTX 3060 Laptop GPU
+python scripts/evaluate.py          # writes results/x3/metrics.md, per_image.csv, summary.json
+python scripts/make_figures.py
+python scripts/upscale.py           # enlarges every image in inputs/ into outputs/
+python -m pytest                    # the comparison with the paper runs after download_data.py
+```
+
+`--scale 2` (or 4) on train.py, evaluate.py and upscale.py works with another factor; the published
+reference numbers in the code are for ×3.
+
+## Reference
+
+Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang. *Image Super-Resolution Using Deep Convolutional
+Networks.* IEEE TPAMI 38(2), 2016 ([arXiv:1501.00092](https://arxiv.org/abs/1501.00092)). Earlier
+version: *Learning a Deep Convolutional Network for Image Super-Resolution*, ECCV 2014.
+[Project page](https://mmlab.ie.cuhk.edu.hk/projects/SRCNN.html) with the code, data and weights
+used here.

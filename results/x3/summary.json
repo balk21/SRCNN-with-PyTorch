@@ -1,0 +1,66 @@
+{
+  "scale": 3,
+  "weights": {
+    "scale": 3,
+    "iterations": 170000,
+    "sub_images": 21884,
+    "optimizer": "Adam",
+    "seconds": 1843
+  },
+  "sets": {
+    "Set5": {
+      "images": 5,
+      "bicubic_psnr": 30.392202034365322,
+      "bicubic_ssim": 0.868205670481656,
+      "srcnn_psnr": 31.669071722741364,
+      "srcnn_ssim": 0.8887197792730472,
+      "published": {
+        "bicubic": [
+          30.39,
+          0.8682
+        ],
+        "srcnn": [
+          32.39,
+          null
+        ]
+      },
+      "authors_weights_psnr": 32.389692627714375,
+      "authors_weights_ssim": 0.9033377588925517
+    },
+    "Set14": {
+      "images": 14,
+      "bicubic_psnr": 27.540531965545938,
+      "bicubic_ssim": 0.7736092581598021,
+      "srcnn_psnr": 28.59005134959845,
+      "srcnn_ssim": 0.8072570018798932,
+      "published": {
+        "bicubic": [
+          27.54,
+          0.7736
+        ],
+        "srcnn": [
+          29.0,
+          null
+        ]
+      },
+      "authors_weights_psnr": 29.003237240596864,
+      "authors_weights_ssim": 0.8144799279786439
+    },
+    "BSD200": {
+      "images": 200,
+      "bicubic_psnr": 27.69665945394944,
+      "bicubic_ssim": 0.7634576537016039,
+      "srcnn_psnr": 28.410630173133153,
+      "srcnn_ssim": 0.7963441085167798,
+      "published": {
+        "bicubic": [
+          25.94,
+          0.7469
+        ],
+        "srcnn": null
+      },
+      "authors_weights_psnr": 28.6969836841648,
+      "authors_weights_ssim": 0.8019581340679696
+    }
+  }
+}
